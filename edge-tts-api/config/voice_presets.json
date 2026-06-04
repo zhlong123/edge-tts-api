@@ -1,0 +1,18 @@
+{
+  "presets": [
+    {"id": 1, "name": "女声-晓晓(默认)", "voice": "zh-CN-XiaoxiaoNeural", "lang": "普通话"},
+    {"id": 2, "name": "男声-云扬", "voice": "zh-CN-YunyangNeural", "lang": "普通话"},
+    {"id": 3, "name": "女声-晓伊", "voice": "zh-CN-XiaoyiNeural", "lang": "普通话"},
+    {"id": 4, "name": "男声-云健", "voice": "zh-CN-YunjianNeural", "lang": "普通话"},
+    {"id": 5, "name": "男声-云希", "voice": "zh-CN-YunxiNeural", "lang": "普通话"},
+    {"id": 6, "name": "男声-云夏", "voice": "zh-CN-YunxiaNeural", "lang": "普通话"},
+    {"id": 7, "name": "女声-辽宁小贝", "voice": "zh-CN-liaoning-XiaobeiNeural", "lang": "东北话"},
+    {"id": 8, "name": "女声-陕西小妮", "voice": "zh-CN-shaanxi-XiaoniNeural", "lang": "陕西话"},
+    {"id": 9, "name": "女声-香港海佳", "voice": "zh-HK-HiuGaaiNeural", "lang": "粤语"},
+    {"id": 10, "name": "女声-香港海曼", "voice": "zh-HK-HiuMaanNeural", "lang": "粤语"},
+    {"id": 11, "name": "男声-香港万龙", "voice": "zh-HK-WanLungNeural", "lang": "粤语"},
+    {"id": 12, "name": "英文-Jenny", "voice": "en-US-JennyNeural", "lang": "英语"},
+    {"id": 13, "name": "英文-Guy", "voice": "en-US-GuyNeural", "lang": "英语"},
+    {"id": 14, "name": "日文-Nanami", "voice": "ja-JP-NanamiNeural", "lang": "日语"}
+  ]
+}

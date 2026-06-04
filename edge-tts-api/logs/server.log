@@ -1,0 +1,57 @@
+INFO:     Started server process [57740]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:9880 (Press CTRL+C to quit)
+INFO:     127.0.0.1:57369 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57370 - "GET /health HTTP/1.1" 200 OK
+INFO:     Started server process [56948]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:9880 (Press CTRL+C to quit)
+INFO:     127.0.0.1:57449 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57451 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57452 - "POST /v1/audio/speech HTTP/1.1" 200 OK
+INFO:     Started server process [56732]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:9880 (Press CTRL+C to quit)
+INFO:     127.0.0.1:57684 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57685 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57686 - "POST /v1/audio/speech HTTP/1.1" 200 OK
+INFO:     Started server process [57784]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:9880 (Press CTRL+C to quit)
+INFO:     127.0.0.1:58332 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58334 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58337 - "POST /v1/audio/speech HTTP/1.1" 200 OK
+INFO:     Started server process [25100]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:9880 (Press CTRL+C to quit)
+INFO:     127.0.0.1:58423 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58424 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58425 - "POST /v1/audio/speech HTTP/1.1" 200 OK
+INFO:     Started server process [51272]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:9880 (Press CTRL+C to quit)
+INFO:     127.0.0.1:58758 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58759 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58760 - "POST /v1/audio/speech HTTP/1.1" 200 OK
+INFO:     Started server process [55476]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:9880 (Press CTRL+C to quit)
+INFO:     127.0.0.1:59390 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59391 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59392 - "POST /v1/audio/speech HTTP/1.1" 200 OK
+INFO:     Started server process [59316]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:9880 (Press CTRL+C to quit)
+INFO:     127.0.0.1:60114 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60145 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60146 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60149 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60147 - "POST /v1/audio/speech HTTP/1.1" 200 OK
