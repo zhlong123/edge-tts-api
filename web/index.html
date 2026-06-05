@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-lang="zh">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EDGE tts — 用微软的声音说话</title>
+  <title data-i18n="app.title">EDGE tts — 用微软的声音说话</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='40' fill='%23ff4d3a'/%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Noto+Serif+SC:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Noto+Serif+SC:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     /* ════════════════════════════════════════════════════
        0. TOKENS
@@ -38,7 +38,7 @@
       --code-border: #1f2028;
 
       --font-display: "Fraunces", "Noto Serif SC", ui-serif, Georgia, serif;
-      --font-body:    "Noto Sans SC", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      --font-body:    "Inter", "Noto Sans SC", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
       --font-mono:    "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 
       --shadow-sm: 0 1px 2px rgba(0,0,0,0.4);
@@ -139,6 +139,13 @@
       justify-content: space-between;
       padding: 22px 0 20px;
       border-bottom: 1px solid var(--border);
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
     }
 
     .brand {
@@ -224,6 +231,40 @@
     }
     .live-text { font-variant-numeric: tabular-nums; }
     .live-text b { color: var(--text); font-weight: 500; }
+
+    /* ─── Language switcher ─── */
+    .lang-switch {
+      display: inline-flex;
+      align-items: center;
+      gap: 0;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      overflow: hidden;
+      background: var(--surface);
+    }
+    .lang-switch button {
+      background: transparent;
+      color: var(--text-dim);
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+      letter-spacing: 0.05em;
+      font-family: inherit;
+      font-size: inherit;
+      transition: color 0.15s, background 0.15s;
+    }
+    .lang-switch button:hover { color: var(--text-2); }
+    .lang-switch button.active {
+      background: var(--accent);
+      color: white;
+    }
+    .lang-switch .sep {
+      width: 1px;
+      height: 14px;
+      background: var(--border);
+    }
 
     /* ════════════════════════════════════════════════════
        3. TABS
@@ -895,6 +936,7 @@
     @media (max-width: 640px) {
       .shell { padding: 0 18px; }
       .topbar { flex-direction: column; align-items: flex-start; gap: 14px; }
+      .topbar-right { width: 100%; justify-content: space-between; }
       .brand .zh { display: none; }
       .editor-footer { flex-direction: column; align-items: stretch; }
       .synth-btn { margin-left: 0; justify-content: center; }
@@ -913,24 +955,31 @@
         <span class="dot-sep"></span>
         <span class="sub">v1.0</span>
         <span class="dot-sep"></span>
-        <span class="zh">微软语音合成</span>
+        <span class="zh" data-i18n="brand.zh">微软语音合成</span>
       </a>
-      <div id="live" class="live" title="后端服务状态">
-        <div class="live-bars">
-          <span></span><span></span><span></span><span></span>
-          <span></span><span></span><span></span>
+      <div class="topbar-right">
+        <div class="lang-switch" role="group" aria-label="Language">
+          <button type="button" data-set-lang="zh" class="active" aria-label="中文">中</button>
+          <span class="sep"></span>
+          <button type="button" data-set-lang="en" aria-label="English">EN</button>
         </div>
-        <span class="live-text">状态 <b id="liveText">检查中</b></span>
+        <div id="live" class="live" data-i18n-attr="title:live.title" title="后端服务状态">
+          <div class="live-bars">
+            <span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span>
+          </div>
+          <span class="live-text"><span data-i18n="live.status">状态</span> <b id="liveText" data-i18n="live.checking">检查中</b></span>
+        </div>
       </div>
     </header>
 
     <!-- ═══ Tabs ═══ -->
     <nav class="tabs" role="tablist">
       <div class="tab active" data-tab="test" role="tab">
-        <span class="num">01</span>合成台
+        <span class="num">01</span><span data-i18n="tab.test">合成台</span>
       </div>
       <div class="tab" data-tab="docs" role="tab">
-        <span class="num">02</span>API 文档
+        <span class="num">02</span><span data-i18n="tab.docs">API 文档</span>
       </div>
     </nav>
 
@@ -938,8 +987,8 @@
     <section id="tab-test" class="tab-panel active">
       <div class="hero">
         <div class="hero-left">
-          <h2>用 Edge 的声音,<br><em>说</em>你的话。</h2>
-          <p class="lede">
+          <h2 data-i18n-html="hero.h2">用 Edge 的声音,<br><em>说</em>你的话。</h2>
+          <p class="lede" data-i18n-html="hero.lede">
             一个<strong>零成本、零 Key</strong>的 OpenAI 兼容 TTS 网关。
             接 openai-python / LangChain / Dify / LobeChat,直接 <code style="font-family:var(--font-mono);font-size:13px;background:var(--accent-soft);color:var(--accent);padding:1px 6px;border-radius:4px">base_url</code> 替换即用。
           </p>
@@ -948,9 +997,9 @@
           <dl class="meta">
             <dt>ENDPOINT</dt><dd><b>POST</b> /v1/audio/speech</dd>
             <dt>FORMAT</dt> <dd>audio/mpeg (mp3)</dd>
-            <dt>VOICES</dt> <dd>300+ Edge 原生音色</dd>
+            <dt>VOICES</dt> <dd data-i18n="meta.voices">300+ Edge 原生音色</dd>
             <dt>SPEED</dt>  <dd>0.25× — 4.0×</dd>
-            <dt>PROTO</dt>  <dd>OpenAI 兼容 / Bearer 鉴权</dd>
+            <dt>PROTO</dt>  <dd data-i18n="meta.proto">OpenAI 兼容 / Bearer 鉴权</dd>
           </dl>
         </div>
       </div>
@@ -959,17 +1008,17 @@
         <div class="editor-toolbar">
           <div class="left">
             <span class="pill live-pill">input.txt</span>
-            <span id="charCount">0 字</span>
+            <span id="charCount" data-i18n-html="char.count">0 字</span>
           </div>
           <div class="right">
-            <span id="hintKbd">⌘/Ctrl + Enter 合成</span>
+            <span id="hintKbd" data-i18n="kbd.hint">⌘/Ctrl + Enter 合成</span>
           </div>
         </div>
 
-        <textarea id="text" placeholder="在此输入要合成的文字…">你好,这是 Edge TTS 语音合成测试。</textarea>
+        <textarea id="text" data-i18n="text.placeholder" data-i18n-attr="placeholder:text.placeholder" placeholder="在此输入要合成的文字…">你好,这是 Edge TTS 语音合成测试。</textarea>
 
         <details class="auth">
-          <summary>API Key · 后端开启鉴权时填入</summary>
+          <summary data-i18n="auth.summary">API Key · 后端开启鉴权时填入</summary>
           <div class="auth-body">
             <input type="password" id="apiKey" placeholder="sk-..." autocomplete="off" />
           </div>
@@ -977,23 +1026,23 @@
 
         <div class="editor-footer">
           <div class="group">
-            <span class="label">音色</span>
+            <span class="label" data-i18n="label.voice">音色</span>
             <span class="select">
-              <select id="voice" disabled><option>加载中…</option></select>
+              <select id="voice" disabled><option data-i18n="voice.loading">加载中…</option></select>
             </span>
           </div>
           <div class="group">
-            <span class="label">语速</span>
+            <span class="label" data-i18n="label.speed">语速</span>
             <span class="speed">
               <input type="range" id="speed" min="0.5" max="2.0" step="0.1" value="1.0" />
               <span class="speed-val" id="speedVal">1.0×</span>
             </span>
           </div>
-          <button id="clearBtn" class="ghost-btn">清空</button>
-          <button id="exampleBtn" class="ghost-btn">示例</button>
+          <button id="clearBtn" class="ghost-btn" data-i18n="btn.clear">清空</button>
+          <button id="exampleBtn" class="ghost-btn" data-i18n="btn.example">示例</button>
           <button id="synthBtn" class="synth-btn" disabled>
             <span class="icon"></span>
-            <span class="label">合成语音</span>
+            <span class="label" data-i18n="btn.synth">合成语音</span>
           </button>
         </div>
       </div>
@@ -1017,34 +1066,34 @@
     <section id="tab-docs" class="tab-panel">
       <div class="docs">
 
-        <h2>API <span class="accent">调用</span><span class="ord">01</span></h2>
-        <p>
+        <h2><span data-i18n="docs.h2.1a">API</span> <span class="accent" data-i18n="docs.h2.1b">调用</span><span class="ord">01</span></h2>
+        <p data-i18n-html="docs.p.1">
           本服务是 <b>OpenAI 兼容的 Edge TTS</b> 端点。任何支持自定义 <code>base_url</code> 的客户端,把它指向 <code>http://127.0.0.1:9880</code> 即可直接对接。
         </p>
-        <div class="warn-box">
+        <div class="warn-box" data-i18n-html="docs.warn">
           <b>⚠</b> 调用的是微软 Edge 内置的"朗读"接口,未获官方授权。商业化推荐 <a href="https://learn.microsoft.com/azure/ai-services/speech-service/" target="_blank" style="color:inherit">Azure Speech</a> 或本地 TTS。
         </div>
 
-        <h2>鉴<span class="accent">权</span><span class="ord">02</span></h2>
-        <p>默认关闭。开启后请求需带:</p>
-<pre><div class="pre-head"><span class="lang">http</span><button class="copy" data-copy>复制</button></div><code><span class="k">Authorization:</span> Bearer sk-edge-tts-local</code></pre>
-        <p>用 <code>python manage.py toggle-auth on</code> 开关,<code>api_key</code> 在 <code>config/settings.json</code> 改。</p>
+        <h2><span data-i18n="docs.h2.2a">鉴</span><span class="accent" data-i18n="docs.h2.2b">权</span><span class="ord">02</span></h2>
+        <p data-i18n="docs.p.auth">默认关闭。开启后请求需带:</p>
+<pre><div class="pre-head"><span class="lang">http</span><button class="copy" data-copy data-i18n="btn.copy">复制</button></div><code><span class="k">Authorization:</span> Bearer sk-edge-tts-local</code></pre>
+        <p data-i18n-html="docs.p.auth2">用 <code>python manage.py toggle-auth on</code> 开关,<code>api_key</code> 在 <code>config/settings.json</code> 改。</p>
 
-        <h2>合成<span class="accent">端点</span><span class="ord">03</span></h2>
+        <h2><span data-i18n="docs.h2.3a">合成</span><span class="accent" data-i18n="docs.h2.3b">端点</span><span class="ord">03</span></h2>
         <div class="endpoint">
           <span class="method post">POST</span>
           <span class="endpoint-path">/v1/audio/speech</span>
-          <p class="endpoint-desc">OpenAI 兼容的核心合成端点,返回 <code>audio/mpeg</code>。</p>
+          <p class="endpoint-desc" data-i18n-html="docs.p.speech">OpenAI 兼容的核心合成端点,返回 <code>audio/mpeg</code>。</p>
         </div>
-<pre><div class="pre-head"><span class="lang">bash</span><button class="copy" data-copy>复制</button></div><code>curl -X POST http://127.0.0.1:9880/v1/audio/speech \
+<pre><div class="pre-head"><span class="lang">bash</span><button class="copy" data-copy data-i18n="btn.copy">复制</button></div><code>curl -X POST http://127.0.0.1:9880/v1/audio/speech \
   -H <span class="s">"Authorization: Bearer sk-edge-tts-local"</span> \
   -H <span class="s">"Content-Type: application/json"</span> \
   -d <span class="s">'{"input":"你好","voice":"zh-CN-XiaoxiaoNeural"}'</span> \
   --output hello.mp3</code></pre>
-        <p>字段:<code>input</code>(必填)、<code>voice</code>(默认 <code>zh-CN-XiaoxiaoNeural</code>)、<code>speed</code>(0.25 - 4.0,默认 1.0)、<code>response_format</code>(仅支持 <code>mp3</code>)。<code>model</code> 任意值,当前不区分 <code>tts-1</code> / <code>tts-1-hd</code>。</p>
+        <p data-i18n-html="docs.p.fields">字段:<code>input</code>(必填)、<code>voice</code>(默认 <code>zh-CN-XiaoxiaoNeural</code>)、<code>speed</code>(0.25 - 4.0,默认 1.0)、<code>response_format</code>(仅支持 <code>mp3</code>)。<code>model</code> 任意值,当前不区分 <code>tts-1</code> / <code>tts-1-hd</code>。</p>
 
-        <h2>Python <span class="accent">示例</span><span class="ord">04</span></h2>
-<pre><div class="pre-head"><span class="lang">python</span><button class="copy" data-copy>复制</button></div><code><span class="k">from</span> openai <span class="k">import</span> OpenAI
+        <h2>Python <span class="accent" data-i18n="docs.h2.4b">示例</span><span class="ord">04</span></h2>
+<pre><div class="pre-head"><span class="lang">python</span><button class="copy" data-copy data-i18n="btn.copy">复制</button></div><code><span class="k">from</span> openai <span class="k">import</span> OpenAI
 
 client = OpenAI(
     api_key=<span class="s">"sk-edge-tts-local"</span>,
@@ -1058,22 +1107,22 @@ resp = client.audio.speech.create(
 <span class="k">with</span> <span class="f">open</span>(<span class="s">"hello.mp3"</span>, <span class="s">"wb"</span>) <span class="k">as</span> f:
     f.write(resp.read())</code></pre>
 
-        <h2>其它<span class="accent">端点</span><span class="ord">05</span></h2>
+        <h2><span data-i18n="docs.h2.5a">其它</span><span class="accent" data-i18n="docs.h2.5b">端点</span><span class="ord">05</span></h2>
         <ul>
-          <li><code>GET /health</code> — 健康检查,返回 <code>{ status, default_voice, port }</code></li>
-          <li><code>GET /v1/voices</code> — 300+ Edge 公网全部音色(网页下拉用这个)</li>
-          <li><code>GET /v1/voices/presets</code> — 14 个精选预设(本地,离线可用)</li>
-          <li><code>GET /v1/models</code> — OpenAI 兼容的模型列表</li>
+          <li data-i18n-html="docs.li.health"><code>GET /health</code> — 健康检查,返回 <code>{ status, default_voice, port }</code></li>
+          <li data-i18n-html="docs.li.voices"><code>GET /v1/voices</code> — 300+ Edge 公网全部音色(网页下拉用这个)</li>
+          <li data-i18n-html="docs.li.presets"><code>GET /v1/voices/presets</code> — 14 个精选预设(本地,离线可用)</li>
+          <li data-i18n-html="docs.li.models"><code>GET /v1/models</code> — OpenAI 兼容的模型列表</li>
         </ul>
 
-        <h2>常见<span class="accent">问题</span><span class="ord">06</span></h2>
+        <h2><span data-i18n="docs.h2.6a">常见</span><span class="accent" data-i18n="docs.h2.6b">问题</span><span class="ord">06</span></h2>
         <div class="faq">
-          <p class="faq-q">合成返回 502 "Edge TTS 合成失败"?</p>
-          <p class="faq-a">Edge TTS 走公网,需能访问微软服务器。开 VPN / 代理可能反而不通(被 SNI 拦截),直连国内网络即可。</p>
-          <p class="faq-q">局域网设备连不上?</p>
-          <p class="faq-a">检查本机防火墙:Windows 防火墙入站规则放行 TCP 9880;Linux <code>ufw allow 9880/tcp</code>。</p>
-          <p class="faq-q">怎么加新音色?</p>
-          <p class="faq-a">编辑 <code>config/voice_presets.json</code>。<code>voice</code> 字段须为 <code>GET /v1/voices</code> 返回的 <code>ShortName</code>。</p>
+          <p class="faq-q" data-i18n="docs.faq.1q">合成返回 502 "Edge TTS 合成失败"?</p>
+          <p class="faq-a" data-i18n="docs.faq.1a">Edge TTS 走公网,需能访问微软服务器。开 VPN / 代理可能反而不通(被 SNI 拦截),直连国内网络即可。</p>
+          <p class="faq-q" data-i18n="docs.faq.2q">局域网设备连不上?</p>
+          <p class="faq-a" data-i18n-html="docs.faq.2a">检查本机防火墙:Windows 防火墙入站规则放行 TCP 9880;Linux <code>ufw allow 9880/tcp</code>。</p>
+          <p class="faq-q" data-i18n="docs.faq.3q">怎么加新音色?</p>
+          <p class="faq-a" data-i18n-html="docs.faq.3a">编辑 <code>config/voice_presets.json</code>。<code>voice</code> 字段须为 <code>GET /v1/voices</code> 返回的 <code>ShortName</code>。</p>
         </div>
 
       </div>
@@ -1081,7 +1130,7 @@ resp = client.audio.speech.create(
 
     <!-- ═══ Footer ═══ -->
     <footer class="foot">
-      <div>© 2026 EDGE·tts · <a href="https://github.com/zhlong123/edge-tts-api" target="_blank">zhlong123/edge-tts-api</a> · MIT</div>
+      <div><span data-i18n="foot.copy">© 2026 EDGE·tts ·</span> <a href="https://github.com/zhlong123/edge-tts-api" target="_blank">zhlong123/edge-tts-api</a> · MIT</div>
       <div class="links">
         <a href="/docs" target="_blank">Swagger</a>
         <a href="https://github.com/zhlong123/edge-tts-api" target="_blank">GitHub</a>
@@ -1092,6 +1141,275 @@ resp = client.audio.speech.create(
   </div>
 
   <script>
+    // ════════════════════════════════════════════════════
+    // 0. I18N
+    // ════════════════════════════════════════════════════
+    const I18N = {
+      zh: {
+        "app.title":           "EDGE tts — 用微软的声音说话",
+        "brand.zh":            "微软语音合成",
+        "live.title":          "后端服务状态",
+        "live.status":         "状态",
+        "live.online":         "在线",
+        "live.offline":        "后端离线",
+        "live.checking":       "检查中",
+        "tab.test":            "合成台",
+        "tab.docs":            "API 文档",
+        "hero.h2":             "用 Edge 的声音,<br><em>说</em>你的话。",
+        "hero.lede":           '一个<strong>零成本、零 Key</strong>的 OpenAI 兼容 TTS 网关。接 openai-python / LangChain / Dify / LobeChat,直接 <code style="font-family:var(--font-mono);font-size:13px;background:var(--accent-soft);color:var(--accent);padding:1px 6px;border-radius:4px">base_url</code> 替换即用。',
+        "meta.voices":         "300+ Edge 原生音色",
+        "meta.proto":          "OpenAI 兼容 / Bearer 鉴权",
+        "char.count":          "{n} 字",
+        "kbd.hint":            "⌘/Ctrl + Enter 合成",
+        "text.placeholder":    "在此输入要合成的文字…",
+        "text.default":        "你好,这是 Edge TTS 语音合成测试。",
+        "auth.summary":        "API Key · 后端开启鉴权时填入",
+        "label.voice":         "音色",
+        "label.speed":         "语速",
+        "voice.loading":       "加载中…",
+        "voice.default":       "zh-CN-XiaoxiaoNeural (默认)",
+        "btn.clear":           "清空",
+        "btn.example":         "示例",
+        "btn.synth":           "合成语音",
+        "btn.synth.loading":   "合成中…",
+        "btn.copy":            "复制",
+        "btn.copy.done":       "✓ 已复制",
+        "btn.copy.fail":       "✕ 复制失败,请手动选择",
+        "alert.empty.text":    "请输入要合成的文本",
+        "alert.401":           "鉴权失败: {detail}。请在 <code>API Key</code> 处填入正确密钥。",
+        "alert.fail":          "合成失败: {detail}",
+        "alert.network":       "网络错误: {msg}",
+        "alert.voices.partial": "全量音色列表加载失败,使用本地预设: {msg}",
+        "alert.voices.fail":   "音色列表加载失败,使用默认音色: {msg}",
+        "result.size":         "大小",
+        "result.time":         "耗时",
+        "result.voice":        "音色",
+        "result.download":     "⬇ 下载 MP3",
+        "foot.copy":           "© 2026 EDGE·tts ·",
+        "docs.h2.1a":          "API",
+        "docs.h2.1b":          "调用",
+        "docs.p.1":            '本服务是 <b>OpenAI 兼容的 Edge TTS</b> 端点。任何支持自定义 <code>base_url</code> 的客户端,把它指向 <code>http://127.0.0.1:9880</code> 即可直接对接。',
+        "docs.warn":           '<b>⚠</b> 调用的是微软 Edge 内置的"朗读"接口,未获官方授权。商业化推荐 <a href="https://learn.microsoft.com/azure/ai-services/speech-service/" target="_blank" style="color:inherit">Azure Speech</a> 或本地 TTS。',
+        "docs.h2.2a":          "鉴",
+        "docs.h2.2b":          "权",
+        "docs.p.auth":         "默认关闭。开启后请求需带:",
+        "docs.p.auth2":        '用 <code>python manage.py toggle-auth on</code> 开关,<code>api_key</code> 在 <code>config/settings.json</code> 改。',
+        "docs.h2.3a":          "合成",
+        "docs.h2.3b":          "端点",
+        "docs.p.speech":       'OpenAI 兼容的核心合成端点,返回 <code>audio/mpeg</code>。',
+        "docs.p.fields":       '字段:<code>input</code>(必填)、<code>voice</code>(默认 <code>zh-CN-XiaoxiaoNeural</code>)、<code>speed</code>(0.25 - 4.0,默认 1.0)、<code>response_format</code>(仅支持 <code>mp3</code>)。<code>model</code> 任意值,当前不区分 <code>tts-1</code> / <code>tts-1-hd</code>。',
+        "docs.h2.4b":          "示例",
+        "docs.h2.5a":          "其它",
+        "docs.h2.5b":          "端点",
+        "docs.li.health":      '<code>GET /health</code> — 健康检查,返回 <code>{ status, default_voice, port }</code>',
+        "docs.li.voices":      '<code>GET /v1/voices</code> — 300+ Edge 公网全部音色(网页下拉用这个)',
+        "docs.li.presets":     '<code>GET /v1/voices/presets</code> — 14 个精选预设(本地,离线可用)',
+        "docs.li.models":      '<code>GET /v1/models</code> — OpenAI 兼容的模型列表',
+        "docs.h2.6a":          "常见",
+        "docs.h2.6b":          "问题",
+        "docs.faq.1q":         '合成返回 502 "Edge TTS 合成失败"?',
+        "docs.faq.1a":         "Edge TTS 走公网,需能访问微软服务器。开 VPN / 代理可能反而不通(被 SNI 拦截),直连国内网络即可。",
+        "docs.faq.2q":         "局域网设备连不上?",
+        "docs.faq.2a":         '检查本机防火墙:Windows 防火墙入站规则放行 TCP 9880;Linux <code>ufw allow 9880/tcp</code>。',
+        "docs.faq.3q":         "怎么加新音色?",
+        "docs.faq.3a":         '编辑 <code>config/voice_presets.json</code>。<code>voice</code> 字段须为 <code>GET /v1/voices</code> 返回的 <code>ShortName</code>。',
+      },
+      en: {
+        "app.title":           "EDGE tts — Speak with Microsoft voices",
+        "brand.zh":            "Microsoft TTS",
+        "live.title":          "Backend status",
+        "live.status":         "Status",
+        "live.online":         "online",
+        "live.offline":        "offline",
+        "live.checking":       "checking…",
+        "tab.test":            "Studio",
+        "tab.docs":            "API Docs",
+        "hero.h2":             "Speak with<br>Edge <em>voices</em>.",
+        "hero.lede":           'An <strong>OpenAI-compatible</strong> TTS gateway — <strong>zero cost, zero key</strong>. Point any client\'s <code style="font-family:var(--font-mono);font-size:13px;background:var(--accent-soft);color:var(--accent);padding:1px 6px;border-radius:4px">base_url</code> at it and go.',
+        "meta.voices":         "300+ Edge native voices",
+        "meta.proto":          "OpenAI compatible / Bearer auth",
+        "char.count":          "{n} chars",
+        "kbd.hint":            "⌘/Ctrl + Enter to synthesize",
+        "text.placeholder":    "Type something to synthesize…",
+        "text.default":        "Hello, this is an Edge TTS speech synthesis test.",
+        "auth.summary":        "API Key · only when auth is enabled",
+        "label.voice":         "Voice",
+        "label.speed":         "Speed",
+        "voice.loading":       "Loading…",
+        "voice.default":       "zh-CN-XiaoxiaoNeural (default)",
+        "btn.clear":           "Clear",
+        "btn.example":         "Example",
+        "btn.synth":           "Synthesize",
+        "btn.synth.loading":   "Synthesizing…",
+        "btn.copy":            "Copy",
+        "btn.copy.done":       "✓ Copied",
+        "btn.copy.fail":       "✕ Copy failed, select manually",
+        "alert.empty.text":    "Please enter some text to synthesize",
+        "alert.401":           "Auth failed: {detail}. Please enter the correct key in <code>API Key</code>.",
+        "alert.fail":          "Synthesis failed: {detail}",
+        "alert.network":       "Network error: {msg}",
+        "alert.voices.partial": "Failed to load all voices, using local presets: {msg}",
+        "alert.voices.fail":   "Failed to load voices, using default: {msg}",
+        "result.size":         "Size",
+        "result.time":         "Time",
+        "result.voice":        "Voice",
+        "result.download":     "⬇ Download MP3",
+        "foot.copy":           "© 2026 EDGE·tts ·",
+        "docs.h2.1a":          "API",
+        "docs.h2.1b":          "Usage",
+        "docs.p.1":            'This service is an <b>OpenAI-compatible Edge TTS</b> endpoint. Any client that supports a custom <code>base_url</code> can talk to it by pointing at <code>http://127.0.0.1:9880</code>.',
+        "docs.warn":           '<b>⚠</b> This calls Microsoft Edge\'s built-in "Read Aloud" backend, which is not officially authorized for third-party use. For commercial use, consider <a href="https://learn.microsoft.com/azure/ai-services/speech-service/" target="_blank" style="color:inherit">Azure Speech</a> or a local TTS model.',
+        "docs.h2.2a":          "Auth",
+        "docs.h2.2b":          "entication",
+        "docs.p.auth":         "Disabled by default. When enabled, requests must include:",
+        "docs.p.auth2":        'Toggle with <code>python manage.py toggle-auth on</code>; the <code>api_key</code> lives in <code>config/settings.json</code>.',
+        "docs.h2.3a":          "Synthesis",
+        "docs.h2.3b":          "endpoint",
+        "docs.p.speech":       'The OpenAI-compatible core synthesis endpoint. Returns <code>audio/mpeg</code>.',
+        "docs.p.fields":       'Fields: <code>input</code> (required), <code>voice</code> (default <code>zh-CN-XiaoxiaoNeural</code>), <code>speed</code> (0.25 - 4.0, default 1.0), <code>response_format</code> (only <code>mp3</code>). <code>model</code> is ignored — <code>tts-1</code> and <code>tts-1-hd</code> behave identically.',
+        "docs.h2.4b":          "Example",
+        "docs.h2.5a":          "Other",
+        "docs.h2.5b":          "endpoints",
+        "docs.li.health":      '<code>GET /health</code> — Health check, returns <code>{ status, default_voice, port }</code>',
+        "docs.li.voices":      '<code>GET /v1/voices</code> — 300+ Edge public voices (used by the web dropdown)',
+        "docs.li.presets":     '<code>GET /v1/voices/presets</code> — 14 curated local presets (offline)',
+        "docs.li.models":      '<code>GET /v1/models</code> — OpenAI-compatible model list',
+        "docs.h2.6a":          "Frequently",
+        "docs.h2.6b":          "asked",
+        "docs.faq.1q":         'Synthesis returns 502 "Edge TTS synthesis failed"?',
+        "docs.faq.1a":         "Edge TTS requires reaching Microsoft servers. VPNs / proxies can break it (SNI interception). Direct domestic network works best.",
+        "docs.faq.2q":         "LAN devices can\'t connect?",
+        "docs.faq.2a":         'Open TCP 9880 in your firewall: Windows Firewall inbound rule, or Linux <code>ufw allow 9880/tcp</code>.',
+        "docs.faq.3q":         "How to add a new voice?",
+        "docs.faq.3a":         'Edit <code>config/voice_presets.json</code>. The <code>voice</code> field must be a <code>ShortName</code> from <code>GET /v1/voices</code>.',
+      },
+    };
+
+    const EXAMPLES = {
+      zh: [
+        "今天天气真不错,适合出去走走。",
+        "Hello, this is a test of Edge TTS. The quick brown fox jumps over the lazy dog.",
+        "床前明月光,疑是地上霜。举头望明月,低头思故乡。",
+        "在广袤的宇宙中,地球只是一颗微不足道的尘埃,却孕育着我们所知的一切生命。",
+        "声音是最古老的艺术,先于文字,先于图像,先于一切文明的痕迹。",
+      ],
+      en: [
+        "The weather is beautiful today, perfect for a walk outside.",
+        "Edge TTS turns text into speech in over 300 voices and 100+ languages.",
+        "To be, or not to be, that is the question.",
+        "In the vast universe, Earth is but a speck of dust, yet it cradles all the life we know.",
+        "Sound is the oldest art — older than writing, older than image, older than every trace of civilization.",
+      ],
+    };
+
+    const LOCALE_NAMES = {
+      zh: {
+        "zh-CN": "普通话 · 中国大陆",
+        "zh-HK": "粤语 · 香港",
+        "zh-TW": "国语 · 台湾",
+        "en-US": "English · United States",
+        "en-GB": "English · United Kingdom",
+        "en-AU": "English · Australia",
+        "en-IN": "English · India",
+        "ja-JP": "日本語",
+        "ko-KR": "한국어",
+        "fr-FR": "Français",
+        "de-DE": "Deutsch",
+        "es-ES": "Español",
+        "it-IT": "Italiano",
+        "ru-RU": "Русский",
+        "pt-BR": "Português · Brasil",
+        "hi-IN": "हिन्दी",
+        "ar-EG": "العربية",
+        "tr-TR": "Türkçe",
+      },
+      en: {
+        "zh-CN": "Chinese (Mainland)",
+        "zh-HK": "Chinese (Hong Kong)",
+        "zh-TW": "Chinese (Taiwan)",
+        "en-US": "English (US)",
+        "en-GB": "English (UK)",
+        "en-AU": "English (Australia)",
+        "en-IN": "English (India)",
+        "ja-JP": "Japanese",
+        "ko-KR": "Korean",
+        "fr-FR": "French",
+        "de-DE": "German",
+        "es-ES": "Spanish",
+        "it-IT": "Italian",
+        "ru-RU": "Russian",
+        "pt-BR": "Portuguese (Brazil)",
+        "hi-IN": "Hindi",
+        "ar-EG": "Arabic",
+        "tr-TR": "Turkish",
+        // presets fallback keys (lang 字段是中文名)
+        "普通话": "Mandarin",
+        "东北话": "Northeastern",
+        "陕西话": "Shaanxi",
+        "粤语": "Cantonese",
+        "英语": "English",
+        "日语": "Japanese",
+      },
+    };
+
+    const GENDER_TAGS = {
+      zh: { Female: "女", Male: "男" },
+      en: { Female: "F", Male: "M" },
+    };
+
+    // ── Language detection & switching ──────────────
+    function detectLang() {
+      try {
+        const saved = localStorage.getItem("edge-tts-lang");
+        if (saved === "zh" || saved === "en") return saved;
+      } catch {}
+      const nav = (navigator.language || "zh").toLowerCase();
+      return nav.startsWith("zh") ? "zh" : "en";
+    }
+
+    let currentLang = detectLang();
+
+    function t(key, params) {
+      let str = (I18N[currentLang] && I18N[currentLang][key]) || (I18N.zh[key]) || key;
+      if (params) {
+        for (const [k, v] of Object.entries(params)) str = str.split("{" + k + "}").join(v);
+      }
+      return str;
+    }
+
+    function applyI18n() {
+      document.documentElement.setAttribute("data-lang", currentLang);
+      document.documentElement.setAttribute("lang", currentLang === "zh" ? "zh-CN" : "en");
+      document.title = t("app.title");
+      document.querySelectorAll("[data-i18n]").forEach((el) => {
+        el.textContent = t(el.dataset.i18n);
+      });
+      document.querySelectorAll("[data-i18n-html]").forEach((el) => {
+        el.innerHTML = t(el.dataset.i18nHtml);
+      });
+      document.querySelectorAll("[data-i18n-attr]").forEach((el) => {
+        const [attr, key] = el.dataset.i18nAttr.split(":");
+        el.setAttribute(attr, t(key));
+      });
+      document.querySelectorAll("[data-set-lang]").forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.setLang === currentLang);
+      });
+      if (textEl && !textEl.dataset.dirty) textEl.value = t("text.default");
+    }
+
+    function setLang(lang) {
+      if (lang !== "zh" && lang !== "en") return;
+      currentLang = lang;
+      try { localStorage.setItem("edge-tts-lang", lang); } catch {}
+      applyI18n();
+      if (voiceEl && voiceEl.options.length > 1) loadVoices();
+      checkHealth();
+      updateCount();
+    }
+
+    // ════════════════════════════════════════════════════
+    // 1. DOM 引用
+    // ════════════════════════════════════════════════════
     const $ = (id) => document.getElementById(id);
     const textEl       = $("text");
     const voiceEl      = $("voice");
@@ -1112,50 +1430,42 @@ resp = client.audio.speech.create(
     const liveText     = $("liveText");
     const charCount    = $("charCount");
 
-    const EXAMPLES = [
-      "今天天气真不错,适合出去走走。",
-      "Hello, this is a test of Edge TTS. The quick brown fox jumps over the lazy dog.",
-      "床前明月光,疑是地上霜。举头望明月,低头思故乡。",
-      "在广袤的宇宙中,地球只是一颗微不足道的尘埃,却孕育着我们所知的一切生命。",
-      "声音是最古老的艺术,先于文字,先于图像,先于一切文明的痕迹。",
-    ];
-
-    // ─── Tabs ───────────────────────────────────────
+    // ════════════════════════════════════════════════════
+    // 2. Tabs
+    // ════════════════════════════════════════════════════
     function switchTab(name) {
       document.querySelectorAll(".tab").forEach((el) =>
         el.classList.toggle("active", el.dataset.tab === name));
       document.querySelectorAll(".tab-panel").forEach((el) =>
-        el.classList.toggle("active", el.id === `tab-${name}`));
+        el.classList.toggle("active", el.id === "tab-" + name));
       if (name === "test") checkHealth();
     }
     document.querySelectorAll(".tab").forEach((el) => {
       el.addEventListener("click", () => {
         switchTab(el.dataset.tab);
-        history.replaceState(null, "", `#${el.dataset.tab}`);
+        history.replaceState(null, "", "#" + el.dataset.tab);
       });
     });
     document.querySelectorAll("[data-tab-link]").forEach((el) => {
       el.addEventListener("click", (e) => {
         e.preventDefault();
         switchTab(el.dataset.tabLink);
-        history.replaceState(null, "", `#${el.dataset.tabLink}`);
+        history.replaceState(null, "", "#" + el.dataset.tabLink);
       });
     });
     {
       const h = location.hash.replace(/^#/, "");
-      if (h && document.getElementById(`tab-${h}`)) switchTab(h);
+      if (h && document.getElementById("tab-" + h)) switchTab(h);
     }
 
-    // ─── Copy buttons ──────────────────────────────
+    // ════════════════════════════════════════════════════
+    // 3. Copy buttons
+    // ════════════════════════════════════════════════════
     async function copyToClipboard(text) {
-      // 优先用 async Clipboard API(需 secure context,即 HTTPS / localhost)
       if (navigator.clipboard && window.isSecureContext) {
-        try {
-          await navigator.clipboard.writeText(text);
-          return true;
-        } catch (e) { /* fall through to legacy */ }
+        try { await navigator.clipboard.writeText(text); return true; }
+        catch (e) { /* fall through */ }
       }
-      // Fallback: 临时 textarea + execCommand(兼容老浏览器/非安全上下文)
       const ta = document.createElement("textarea");
       ta.value = text;
       ta.setAttribute("readonly", "");
@@ -1169,68 +1479,51 @@ resp = client.audio.speech.create(
       return ok;
     }
 
-    document.querySelectorAll("pre button.copy").forEach((btn) => {
-      btn.addEventListener("click", async () => {
-        const code = btn.parentElement.querySelector("code");
-        if (!code) return;
-        // textContent 拿原始文本,保留换行/空格(不受 CSS 渲染影响)
-        const text = code.textContent.replace(/ /g, " "); // 把 &nbsp; 还原成普通空格
-        const ok = await copyToClipboard(text);
-        const orig = "复制";
-        btn.classList.remove("copied", "failed");
-        if (ok) {
-          btn.textContent = "✓ 已复制";
-          btn.classList.add("copied");
-        } else {
-          btn.textContent = "✕ 复制失败,请手动选择";
-          btn.classList.add("failed");
-        }
-        setTimeout(() => {
-          btn.textContent = orig;
+    function wireCopyButtons() {
+      document.querySelectorAll("pre button.copy").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          const code = btn.parentElement.querySelector("code");
+          if (!code) return;
+          const text = code.textContent.replace(/ /g, " ");
+          const ok = await copyToClipboard(text);
+          const orig = t("btn.copy");
           btn.classList.remove("copied", "failed");
-        }, 1800);
+          if (ok) {
+            btn.textContent = t("btn.copy.done");
+            btn.classList.add("copied");
+          } else {
+            btn.textContent = t("btn.copy.fail");
+            btn.classList.add("failed");
+          }
+          setTimeout(() => {
+            btn.textContent = orig;
+            btn.classList.remove("copied", "failed");
+          }, 1800);
+        });
       });
-    });
+    }
 
-    // ─── Health check ──────────────────────────────
+    // ════════════════════════════════════════════════════
+    // 4. Health check
+    // ════════════════════════════════════════════════════
     async function checkHealth() {
       try {
         const resp = await fetch("/health", { cache: "no-store" });
-        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        if (!resp.ok) throw new Error("HTTP " + resp.status);
         const data = await resp.json();
         liveEl.className = "live ok";
-        liveText.innerHTML = `在线 · :${data.port || "?"}`;
+        liveText.textContent = t("live.online") + " · :" + (data.port || "?");
         synthBtn.disabled = false;
       } catch (e) {
         liveEl.className = "live err";
-        liveText.innerHTML = "后端离线";
+        liveText.textContent = t("live.offline");
         synthBtn.disabled = true;
       }
     }
 
-    // ─── Load voices ───────────────────────────────
-    // Locale → 人类可读中文标签
-    const LOCALE_NAMES = {
-      "zh-CN": "普通话 · 中国大陆",
-      "zh-HK": "粤语 · 香港",
-      "zh-TW": "国语 · 台湾",
-      "en-US": "English · United States",
-      "en-GB": "English · United Kingdom",
-      "en-AU": "English · Australia",
-      "en-IN": "English · India",
-      "ja-JP": "日本語",
-      "ko-KR": "한국어",
-      "fr-FR": "Français",
-      "de-DE": "Deutsch",
-      "es-ES": "Español",
-      "it-IT": "Italiano",
-      "ru-RU": "Русский",
-      "pt-BR": "Português · Brasil",
-      "hi-IN": "हिन्दी",
-      "ar-EG": "العربية",
-      "tr-TR": "Türkçe",
-    };
-    // 常见 Locale 排序优先级(其余按字母序)
+    // ════════════════════════════════════════════════════
+    // 5. Voices
+    // ════════════════════════════════════════════════════
     const LOCALE_ORDER = [
       "zh-CN", "zh-HK", "zh-TW",
       "en-US", "en-GB", "en-AU", "en-IN",
@@ -1249,31 +1542,28 @@ resp = client.audio.speech.create(
 
     function genderTag(g) {
       if (!g) return "";
-      const m = { Female: "女", Male: "男" };
-      return m[g] ? ` · ${m[g]}` : ` · ${g}`;
+      const m = GENDER_TAGS[currentLang] || {};
+      return m[g] ? " · " + m[g] : " · " + g;
     }
 
     async function loadVoices() {
-      voiceEl.innerHTML = '<option>加载中…</option>';
+      voiceEl.innerHTML = "<option>" + t("voice.loading") + "</option>";
       voiceEl.disabled = true;
       try {
-        // 优先拉全量 Edge 原生音色(400+ 项)
         const resp = await fetch("/v1/voices");
-        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        if (!resp.ok) throw new Error("HTTP " + resp.status);
         const { voices = [] } = await resp.json();
-        if (!voices.length) throw new Error("voices 列表为空");
+        if (!voices.length) throw new Error("voices list is empty");
 
-        // 按 Locale 分组
         const groups = {};
         for (const v of voices) {
           const shortName = v.ShortName;
           if (!shortName) continue;
-          const locale = v.Locale || "其他";
+          const locale = v.Locale || "Other";
           const display = (v.FriendlyName || shortName) + genderTag(v.Gender);
           (groups[locale] = groups[locale] || []).push({ voice: shortName, name: display });
         }
 
-        // 排序
         const sortedLocales = Object.keys(groups).sort((a, b) => {
           const ai = LOCALE_ORDER.indexOf(a), bi = LOCALE_ORDER.indexOf(b);
           if (ai === -1 && bi === -1) return a.localeCompare(b);
@@ -1282,68 +1572,67 @@ resp = client.audio.speech.create(
           return ai - bi;
         });
 
-        // 渲染(按 Locale 用 optgroup 分组,组内按 ShortName 升序)
-        const total = voices.length;
-        voiceEl.innerHTML = sortedLocales
-          .map((locale) => {
-            const opts = groups[locale]
-              .sort((a, b) => a.voice.localeCompare(b.voice))
-              .map((p) => `<option value="${escapeHtml(p.voice)}">${escapeHtml(p.name)}</option>`)
-              .join("");
-            const label = LOCALE_NAMES[locale] || locale;
-            return `<optgroup label="${escapeHtml(label)} (${groups[locale].length})">${opts}</optgroup>`;
-          })
-          .join("");
+        const names = (LOCALE_NAMES[currentLang] || LOCALE_NAMES.zh);
+        voiceEl.innerHTML = sortedLocales.map((locale) => {
+          const opts = groups[locale]
+            .sort((a, b) => a.voice.localeCompare(b.voice))
+            .map((p) => "<option value=\"" + escapeHtml(p.voice) + "\">" + escapeHtml(p.name) + "</option>")
+            .join("");
+          const label = names[locale] || locale;
+          return "<optgroup label=\"" + escapeHtml(label) + " (" + groups[locale].length + ")\">" + opts + "</optgroup>";
+        }).join("");
         voiceEl.disabled = false;
-        // 默认选 zh-CN-XiaoxiaoNeural(若有)
         const def = Array.from(voiceEl.options).find((o) => o.value === "zh-CN-XiaoxiaoNeural");
         if (def) voiceEl.value = "zh-CN-XiaoxiaoNeural";
       } catch (e) {
-        // Fallback: 14 个本地预设
         try {
           const resp = await fetch("/v1/voices/presets");
           const { presets = [] } = await resp.json();
           const groups = {};
           presets.forEach((p) => {
-            (groups[p.lang || "其他"] = groups[p.lang || "其他"] || []).push(p);
+            (groups[p.lang || "Other"] = groups[p.lang || "Other"] || []).push(p);
           });
-          voiceEl.innerHTML = Object.keys(groups)
-            .map((lang) => {
-              const opts = groups[lang]
-                .map((p) => `<option value="${escapeHtml(p.voice)}">${escapeHtml(p.name)}</option>`)
-                .join("");
-              return `<optgroup label="${escapeHtml(lang)}">${opts}</optgroup>`;
-            })
-            .join("");
+          voiceEl.innerHTML = Object.keys(groups).map((lang) => {
+            const opts = groups[lang]
+              .map((p) => "<option value=\"" + escapeHtml(p.voice) + "\">" + escapeHtml(p.name) + "</option>")
+              .join("");
+            return "<optgroup label=\"" + escapeHtml(lang) + "\">" + opts + "</optgroup>";
+          }).join("");
           voiceEl.disabled = false;
-          showAlert("warn", `全量音色列表加载失败,使用本地预设: ${e.message}`);
+          showAlert("warn", t("alert.voices.partial", { msg: e.message }));
         } catch (e2) {
           voiceEl.innerHTML =
-            '<option value="zh-CN-XiaoxiaoNeural">zh-CN-XiaoxiaoNeural (默认)</option>';
+            "<option value=\"zh-CN-XiaoxiaoNeural\">" + t("voice.default") + "</option>";
           voiceEl.disabled = false;
-          showAlert("warn", `音色列表加载失败,使用默认音色: ${e2.message}`);
+          showAlert("warn", t("alert.voices.fail", { msg: e2.message }));
         }
       }
     }
 
-    // ─── Alerts ────────────────────────────────────
+    // ════════════════════════════════════════════════════
+    // 6. Alerts
+    // ════════════════════════════════════════════════════
     function showAlert(kind, msg) {
       alertEl.innerHTML =
-        `<div class="alert ${kind}"><span class="icon">${
-          kind === "error" ? "✕" : "⚠"
-        }</span><span>${msg}</span></div>`;
+        '<div class="alert ' + kind + '"><span class="icon">' +
+        (kind === "error" ? "✕" : "⚠") +
+        '</span><span>' + msg + '</span></div>';
     }
     function clearAlert() { alertEl.innerHTML = ""; }
 
-    // ─── Char counter ──────────────────────────────
+    // ════════════════════════════════════════════════════
+    // 7. Char counter
+    // ════════════════════════════════════════════════════
     function updateCount() {
       const n = textEl.value.length;
-      charCount.textContent = `${n} 字`;
+      charCount.textContent = t("char.count", { n });
     }
-    textEl.addEventListener("input", updateCount);
+    textEl.addEventListener("input", () => { textEl.dataset.dirty = "1"; updateCount(); });
     updateCount();
 
-    // ─── Synthesize ────────────────────────────────
+    // ════════════════════════════════════════════════════
+    // 8. Synthesize
+    // ════════════════════════════════════════════════════
     let lastBlobUrl = null;
     function formatBytes(n) {
       if (n < 1024) return n + " B";
@@ -1354,7 +1643,7 @@ resp = client.audio.speech.create(
     async function synthesize() {
       const text = textEl.value.trim();
       if (!text) {
-        showAlert("error", "请输入要合成的文本");
+        showAlert("error", t("alert.empty.text"));
         textEl.focus();
         return;
       }
@@ -1363,12 +1652,13 @@ resp = client.audio.speech.create(
 
       synthBtn.disabled = true;
       synthBtn.classList.add("loading");
-      const origLabel = synthBtn.querySelector(".label").textContent;
-      synthBtn.querySelector(".label").textContent = "合成中…";
+      const synthLabel = synthBtn.querySelector(".label");
+      const origLabel = synthLabel.textContent;
+      synthLabel.textContent = t("btn.synth.loading");
 
       const headers = { "Content-Type": "application/json" };
       const apiKey = apiKeyEl.value.trim();
-      if (apiKey) headers["Authorization"] = `Bearer ${apiKey}`;
+      if (apiKey) headers["Authorization"] = "Bearer " + apiKey;
 
       const t0 = performance.now();
       try {
@@ -1384,17 +1674,16 @@ resp = client.audio.speech.create(
           }),
         });
         if (!resp.ok) {
-          let detail = `HTTP ${resp.status}`;
+          let detail = "HTTP " + resp.status;
           try {
             const j = await resp.json();
             detail = j.detail?.error?.message || j.detail || detail;
           } catch {}
           if (resp.status === 401) {
-            showAlert("error",
-              `鉴权失败: ${detail}。请在 <code>API Key</code> 处填入正确密钥。`);
+            showAlert("error", t("alert.401", { detail }));
             document.querySelector("details.auth").open = true;
           } else {
-            showAlert("error", `合成失败: ${detail}`);
+            showAlert("error", t("alert.fail", { detail }));
           }
           return;
         }
@@ -1411,27 +1700,32 @@ resp = client.audio.speech.create(
         resultEl.classList.add("show");
         audioEl.play().catch(() => {});
       } catch (e) {
-        showAlert("error", `网络错误: ${e.message}`);
+        showAlert("error", t("alert.network", { msg: e.message }));
       } finally {
         synthBtn.disabled = false;
         synthBtn.classList.remove("loading");
-        synthBtn.querySelector(".label").textContent = origLabel;
+        synthLabel.textContent = origLabel;
       }
     }
 
-    // ─── Event wiring ──────────────────────────────
+    // ════════════════════════════════════════════════════
+    // 9. Event wiring
+    // ════════════════════════════════════════════════════
     speedEl.addEventListener("input", () => {
       speedValEl.textContent = parseFloat(speedEl.value).toFixed(1) + "×";
     });
     clearBtn.addEventListener("click", () => {
       textEl.value = "";
+      textEl.dataset.dirty = "";
       resultEl.classList.remove("show");
       clearAlert();
       updateCount();
       textEl.focus();
     });
     exampleBtn.addEventListener("click", () => {
-      textEl.value = EXAMPLES[Math.floor(Math.random() * EXAMPLES.length)];
+      const arr = EXAMPLES[currentLang] || EXAMPLES.zh;
+      textEl.value = arr[Math.floor(Math.random() * arr.length)];
+      textEl.dataset.dirty = "1";
       updateCount();
     });
     synthBtn.addEventListener("click", synthesize);
@@ -1441,6 +1735,10 @@ resp = client.audio.speech.create(
         synthesize();
       }
     });
+    document.querySelectorAll("[data-set-lang]").forEach((btn) => {
+      btn.addEventListener("click", () => setLang(btn.dataset.setLang));
+    });
+
     try {
       const saved = localStorage.getItem("edge-tts-api-key");
       if (saved) apiKeyEl.value = saved;
@@ -1449,7 +1747,11 @@ resp = client.audio.speech.create(
       try { localStorage.setItem("edge-tts-api-key", apiKeyEl.value); } catch {}
     });
 
-    // ─── Init ──────────────────────────────────────
+    // ════════════════════════════════════════════════════
+    // 10. Init
+    // ════════════════════════════════════════════════════
+    applyI18n();
+    wireCopyButtons();
     checkHealth();
     loadVoices();
   </script>
