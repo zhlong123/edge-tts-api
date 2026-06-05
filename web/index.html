@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Edge TTS API · 语音合成测试台</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🔊%3C/text%3E%3C/svg%3E" />
+  <style>
+    :root {
+      --bg: #0f1115;
+      --surface: #1a1d24;
+      --surface-2: #232730;
+      --border: #2d3340;
+      --text: #e6e8ec;
+      --text-dim: #9ba3af;
+      --accent: #4f9dff;
+      --accent-hover: #6cb0ff;
+      --success: #4ade80;
+      --error: #f87171;
+      --warn: #fbbf24;
+      --radius: 10px;
+      --shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #f5f6f8;
+        --surface: #ffffff;
+        --surface-2: #f0f2f5;
+        --border: #d8dde3;
+        --text: #1a1d24;
+        --text-dim: #5b6470;
+        --accent: #2563eb;
+        --accent-hover: #1d4ed8;
+        --shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+      }
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                   "Microsoft YaHei", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 15px;
+      line-height: 1.55;
+      min-height: 100vh;
+    }
+
+    .app {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 28px 24px 60px;
+    }
+
+    /* ─── Header ─────────────────────────── */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .title-block h1 {
+      margin: 0 0 4px;
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    .title-block .sub {
+      color: var(--text-dim);
+      font-size: 13px;
+    }
+
+    .title-block .sub a {
+      color: var(--text-dim);
+      text-decoration: underline;
+      text-decoration-color: var(--border);
+      text-underline-offset: 3px;
+    }
+    .title-block .sub a:hover { color: var(--accent); }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: 12px;
+      color: var(--text-dim);
+      font-variant-numeric: tabular-nums;
+    }
+    .status .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--text-dim);
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+    .status.ok .dot {
+      background: var(--success);
+      box-shadow: 0 0 8px var(--success);
+    }
+    .status.err .dot { background: var(--error); }
+
+    /* ─── Card ───────────────────────────── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 8px;
+    }
+
+    textarea, select, input[type="text"], input[type="password"] {
+      width: 100%;
+      background: var(--surface-2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 14px;
+      font-family: inherit;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    textarea:focus, select:focus, input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(79, 157, 255, 0.18);
+    }
+
+    textarea {
+      min-height: 130px;
+      resize: vertical;
+      line-height: 1.6;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    @media (max-width: 600px) {
+      .row { grid-template-columns: 1fr; }
+    }
+
+    /* ─── Speed slider ───────────────────── */
+    .speed-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    input[type="range"] {
+      flex: 1;
+      accent-color: var(--accent);
+    }
+    .speed-val {
+      min-width: 48px;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* ─── Button ─────────────────────────── */
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 18px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      cursor: pointer;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 18px;
+      font-size: 14px;
+      font-weight: 500;
+      font-family: inherit;
+      transition: all 0.15s;
+      background: var(--surface-2);
+      color: var(--text);
+    }
+    button:hover:not(:disabled) {
+      background: var(--surface);
+      border-color: var(--accent);
+    }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+      font-weight: 600;
+    }
+    .btn-primary:hover:not(:disabled) {
+      background: var(--accent-hover);
+      border-color: var(--accent-hover);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-dim);
+      font-size: 13px;
+      padding: 6px 10px;
+    }
+    .btn-ghost:hover { color: var(--text); }
+
+    /* ─── Spinner ────────────────────────── */
+    .spinner {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: -2px;
+      margin-right: 6px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ─── Alerts ─────────────────────────── */
+    .alert {
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      margin-top: 14px;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      word-break: break-word;
+    }
+    .alert.error {
+      background: rgba(248, 113, 113, 0.1);
+      color: var(--error);
+      border: 1px solid rgba(248, 113, 113, 0.3);
+    }
+    .alert.warn {
+      background: rgba(251, 191, 36, 0.1);
+      color: var(--warn);
+      border: 1px solid rgba(251, 191, 36, 0.3);
+    }
+    .alert .icon { flex-shrink: 0; line-height: 1.4; }
+
+    /* ─── Result ─────────────────────────── */
+    .result {
+      margin-top: 18px;
+      padding: 16px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      display: none;
+    }
+    .result.show { display: block; }
+
+    .result-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 12px;
+      color: var(--text-dim);
+      font-variant-numeric: tabular-nums;
+    }
+
+    audio {
+      width: 100%;
+      margin-top: 4px;
+    }
+
+    /* ─── Auth disclosure ────────────────── */
+    details.auth {
+      margin-top: 10px;
+    }
+    details.auth summary {
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--text-dim);
+      list-style: none;
+      user-select: none;
+    }
+    details.auth summary::-webkit-details-marker { display: none; }
+    details.auth summary::before {
+      content: "▸";
+      display: inline-block;
+      margin-right: 4px;
+      transition: transform 0.15s;
+    }
+    details.auth[open] summary::before { transform: rotate(90deg); }
+    details.auth .auth-body { margin-top: 8px; }
+
+    .hint {
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-top: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="title-block">
+        <h1>🔊 Edge TTS 语音合成测试台</h1>
+        <div class="sub">
+          后端 OpenAI 兼容接口 ·
+          <a href="/docs" target="_blank">API 文档</a> ·
+          <a href="https://github.com/zhlong123/edge-tts-api" target="_blank">GitHub</a>
+        </div>
+      </div>
+      <div id="status" class="status" title="后端健康状态">
+        <span class="dot"></span>
+        <span id="statusText">检查中…</span>
+      </div>
+    </header>
+
+    <div class="card">
+      <label for="text">合成文本</label>
+      <textarea id="text" placeholder="输入要合成的文字…">你好,这是 Edge TTS 语音合成测试。</textarea>
+      <div class="hint">支持中英文 / 数字 / 标点。最长约 10 分钟(受 Edge 接口限制)。</div>
+
+      <div class="row" style="margin-top: 16px;">
+        <div>
+          <label for="voice">音色</label>
+          <select id="voice" disabled>
+            <option>加载中…</option>
+          </select>
+        </div>
+        <div>
+          <label for="speed">语速</label>
+          <div class="speed-wrap">
+            <input type="range" id="speed" min="0.5" max="2.0" step="0.1" value="1.0" />
+            <span class="speed-val" id="speedVal">1.0×</span>
+          </div>
+        </div>
+      </div>
+
+      <details class="auth">
+        <summary>API Key(仅后端开启鉴权时需要)</summary>
+        <div class="auth-body">
+          <input type="password" id="apiKey" placeholder="sk-..." autocomplete="off" />
+          <div class="hint">将保存在浏览器 localStorage,不会上传到任何第三方。</div>
+        </div>
+      </details>
+
+      <div class="actions">
+        <button id="synthBtn" class="btn-primary" disabled>合成语音</button>
+        <button id="clearBtn" class="btn-ghost">清空</button>
+        <button id="exampleBtn" class="btn-ghost">示例文本</button>
+      </div>
+
+      <div id="alert"></div>
+
+      <div id="result" class="result">
+        <div class="result-meta">
+          <span id="resultMeta">—</span>
+          <a id="downloadLink" download="tts.mp3" class="btn-ghost" style="text-decoration: none;">⬇ 下载</a>
+        </div>
+        <audio id="audio" controls></audio>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const textEl = $("text");
+    const voiceEl = $("voice");
+    const speedEl = $("speed");
+    const speedValEl = $("speedVal");
+    const apiKeyEl = $("apiKey");
+    const synthBtn = $("synthBtn");
+    const clearBtn = $("clearBtn");
+    const exampleBtn = $("exampleBtn");
+    const alertEl = $("alert");
+    const resultEl = $("result");
+    const resultMetaEl = $("resultMeta");
+    const audioEl = $("audio");
+    const downloadLink = $("downloadLink");
+    const statusEl = $("status");
+    const statusTextEl = $("statusText");
+
+    const EXAMPLES = [
+      "今天天气真不错,适合出去走走。",
+      "Hello, this is a test of Edge TTS. The quick brown fox jumps over the lazy dog.",
+      "床前明月光,疑是地上霜。举头望明月,低头思故乡。",
+      "在广袤的宇宙中,地球只是一颗微不足道的尘埃,却孕育着我们所知的一切生命。",
+    ];
+
+    // ─── 健康检查 ────────────────────────
+    async function checkHealth() {
+      try {
+        const resp = await fetch("/health", { cache: "no-store" });
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        const data = await resp.json();
+        statusEl.className = "status ok";
+        statusTextEl.textContent = `在线 · :${data.port || "?"}`;
+        synthBtn.disabled = false;
+      } catch (e) {
+        statusEl.className = "status err";
+        statusTextEl.textContent = "后端离线";
+        synthBtn.disabled = true;
+      }
+    }
+
+    // ─── 加载音色 ────────────────────────
+    async function loadVoices() {
+      try {
+        const resp = await fetch("/v1/voices/presets");
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        const data = await resp.json();
+        const presets = data.presets || [];
+        if (!presets.length) {
+          voiceEl.innerHTML = '<option value="zh-CN-XiaoxiaoNeural">zh-CN-XiaoxiaoNeural (默认)</option>';
+          voiceEl.disabled = false;
+          return;
+        }
+        // 按 lang 分组
+        const groups = {};
+        presets.forEach((p) => {
+          const k = p.lang || "其他";
+          (groups[k] = groups[k] || []).push(p);
+        });
+        const langOrder = ["普通话", "东北话", "陕西话", "粤语", "英语", "日语"];
+        const sortedLangs = Object.keys(groups).sort((a, b) => {
+          const ai = langOrder.indexOf(a), bi = langOrder.indexOf(b);
+          if (ai === -1 && bi === -1) return a.localeCompare(b);
+          if (ai === -1) return 1;
+          if (bi === -1) return -1;
+          return ai - bi;
+        });
+        voiceEl.innerHTML = sortedLangs
+          .map((lang) => {
+            const opts = groups[lang]
+              .map((p) => `<option value="${p.voice}">${p.name} — ${p.voice}</option>`)
+              .join("");
+            return `<optgroup label="${lang}">${opts}</optgroup>`;
+          })
+          .join("");
+        voiceEl.disabled = false;
+      } catch (e) {
+        voiceEl.innerHTML = '<option value="zh-CN-XiaoxiaoNeural">zh-CN-XiaoxiaoNeural (默认)</option>';
+        voiceEl.disabled = false;
+        showAlert("warn", `音色列表加载失败,使用默认音色: ${e.message}`);
+      }
+    }
+
+    // ─── 合成 ────────────────────────────
+    let lastBlobUrl = null;
+
+    function showAlert(kind, msg) {
+      alertEl.innerHTML = `<div class="alert ${kind}"><span class="icon">${
+        kind === "error" ? "✕" : "⚠"
+      }</span><span>${msg}</span></div>`;
+    }
+
+    function clearAlert() { alertEl.innerHTML = ""; }
+
+    function formatBytes(n) {
+      if (n < 1024) return n + " B";
+      if (n < 1024 * 1024) return (n / 1024).toFixed(1) + " KB";
+      return (n / 1024 / 1024).toFixed(2) + " MB";
+    }
+
+    async function synthesize() {
+      const text = textEl.value.trim();
+      if (!text) {
+        showAlert("error", "请输入要合成的文本");
+        textEl.focus();
+        return;
+      }
+      clearAlert();
+      resultEl.classList.remove("show");
+
+      synthBtn.disabled = true;
+      const orig = synthBtn.innerHTML;
+      synthBtn.innerHTML = '<span class="spinner"></span>合成中…';
+
+      const headers = { "Content-Type": "application/json" };
+      const apiKey = apiKeyEl.value.trim();
+      if (apiKey) headers["Authorization"] = `Bearer ${apiKey}`;
+
+      const t0 = performance.now();
+      try {
+        const resp = await fetch("/v1/audio/speech", {
+          method: "POST",
+          headers,
+          body: JSON.stringify({
+            model: "tts-1",
+            input: text,
+            voice: voiceEl.value,
+            response_format: "mp3",
+            speed: parseFloat(speedEl.value),
+          }),
+        });
+        if (!resp.ok) {
+          let detail = `HTTP ${resp.status}`;
+          try {
+            const j = await resp.json();
+            detail = j.detail?.error?.message || j.detail || detail;
+          } catch {}
+          if (resp.status === 401) {
+            showAlert("error", `鉴权失败: ${detail}。请在「API Key」处填入正确密钥。`);
+            document.querySelector("details.auth").open = true;
+          } else {
+            showAlert("error", `合成失败: ${detail}`);
+          }
+          return;
+        }
+        const blob = await resp.blob();
+        if (lastBlobUrl) URL.revokeObjectURL(lastBlobUrl);
+        lastBlobUrl = URL.createObjectURL(blob);
+        audioEl.src = lastBlobUrl;
+        downloadLink.href = lastBlobUrl;
+        const ms = Math.round(performance.now() - t0);
+        resultMetaEl.textContent = `${formatBytes(blob.size)} · 耗时 ${(ms / 1000).toFixed(1)}s`;
+        resultEl.classList.add("show");
+        audioEl.play().catch(() => {/* 用户未交互时可能失败,忽略 */});
+      } catch (e) {
+        showAlert("error", `网络错误: ${e.message}`);
+      } finally {
+        synthBtn.disabled = false;
+        synthBtn.innerHTML = orig;
+      }
+    }
+
+    // ─── 事件 ────────────────────────────
+    speedEl.addEventListener("input", () => {
+      speedValEl.textContent = parseFloat(speedEl.value).toFixed(1) + "×";
+    });
+
+    clearBtn.addEventListener("click", () => {
+      textEl.value = "";
+      resultEl.classList.remove("show");
+      clearAlert();
+      textEl.focus();
+    });
+
+    exampleBtn.addEventListener("click", () => {
+      textEl.value = EXAMPLES[Math.floor(Math.random() * EXAMPLES.length)];
+    });
+
+    synthBtn.addEventListener("click", synthesize);
+    textEl.addEventListener("keydown", (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "Enter") synthesize();
+    });
+
+    // 恢复 API Key
+    try {
+      const saved = localStorage.getItem("edge-tts-api-key");
+      if (saved) apiKeyEl.value = saved;
+    } catch {}
+    apiKeyEl.addEventListener("change", () => {
+      try { localStorage.setItem("edge-tts-api-key", apiKeyEl.value); } catch {}
+    });
+
+    // 启动
+    checkHealth();
+    loadVoices();
+  </script>
+</body>
+</html>

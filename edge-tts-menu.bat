@@ -30,6 +30,8 @@ echo  服务地址: http://127.0.0.1:!SERVER_PORT!
 echo  当前音色: !CURRENT_VOICE!
 if "!RUNNING!"=="1" (
     echo  服务状态: [运行中]
+    echo  局域网访问:
+    for /f "delims=" %%i in ('%PYTHON% manage.py lan-url 2^>nul') do echo    %%i
 ) else (
     echo  服务状态: [已停止]
 )
@@ -115,6 +117,8 @@ goto wait_start
 echo.
 echo 服务已启动: http://127.0.0.1:!SERVER_PORT!
 echo API 文档: http://127.0.0.1:!SERVER_PORT!/docs
+echo 局域网访问(同网段设备可用以下地址):
+for /f "delims=" %%i in ('%PYTHON% manage.py lan-url 2^>nul') do echo   %%i
 pause
 goto menu
 

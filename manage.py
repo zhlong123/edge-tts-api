@@ -1,6 +1,8 @@
 """命令行工具，供 bat 脚本调用。"""
 
+import ipaddress
 import json
+import socket
 import sys
 import urllib.error
 import urllib.request
@@ -130,6 +132,60 @@ def cmd_is_running() -> int:
     return cmd_health()
 
 
+def _is_ipv4(s: str) -> bool:
+    try:
+        ipaddress.IPv4Address(s)
+        return True
+    except (ipaddress.AddressValueError, ValueError):
+        return False
+
+
+def _list_lan_ips() -> list[str]:
+    """列出本机所有非回环 IPv4 地址，按字典序去重。"""
+    ips: set[str] = set()
+    # 方法 1: 解析 hostname
+    try:
+        for info in socket.gethostbyname_ex(socket.gethostname()):
+            items = info if isinstance(info, list) else [info]
+            for ip in items:
+                if _is_ipv4(ip) and not ip.startswith("127."):
+                    ips.add(ip)
+    except socket.gaierror:
+        pass
+    # 方法 2: 通过 UDP 套接字让内核给出对外 IP(不发包)
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        try:
+            s.connect(("223.5.5.5", 80))
+            ips.add(s.getsockname()[0])
+        finally:
+            s.close()
+    except OSError:
+        pass
+    return sorted(ips)
+
+
+def cmd_lan_url() -> int:
+    """打印本机所有可局域网访问的 URL,每行一个。"""
+    settings = load_settings()
+    port = int(settings.get("port", 9880))
+    host = settings.get("host", "0.0.0.0")
+
+    if host not in ("0.0.0.0", "::"):
+        # 绑了特定 IP,直接用
+        print(f"http://{host}:{port}/")
+        return 0
+
+    ips = _list_lan_ips()
+    if not ips:
+        print(f"# 未发现可局域网访问的网卡 IP,127.0.0.1 仍可用")
+        print(f"http://127.0.0.1:{port}/")
+        return 0
+    for ip in ips:
+        print(f"http://{ip}:{port}/")
+    return 0
+
+
 def main() -> int:
     if len(sys.argv) < 2:
         print("用法: manage.py <command> [args...]")
@@ -142,6 +198,8 @@ def main() -> int:
         return cmd_get_voice()
     if command == "is-running":
         return cmd_is_running()
+    if command == "lan-url":
+        return cmd_lan_url()
     if command == "show-config":
         return cmd_show_config()
     if command == "list-presets":

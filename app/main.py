@@ -1,12 +1,16 @@
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI, Header, HTTPException
 from fastapi.responses import JSONResponse, Response
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from app.auth import verify_api_key
 from app.config import load_settings, load_voice_presets
 from app.edge_engine import list_all_voices, resolve_voice, synthesize
+
+WEB_DIR = Path(__file__).resolve().parent.parent / "web"
 
 
 class SpeechRequest(BaseModel):
@@ -101,6 +105,11 @@ async def create_speech(
         ) from exc
 
     return Response(content=audio, media_type="audio/mpeg")
+
+
+# ─── 静态前端(放在所有 API 路由之后,FastAPI 会优先匹配 path operation) ───
+if WEB_DIR.is_dir():
+    app.mount("/", StaticFiles(directory=str(WEB_DIR), html=True), name="web")
 
 
 def run():
